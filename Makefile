@@ -237,7 +237,8 @@ CORE_OBJ= stack/pico_stack.o \
           stack/pico_socket.o \
           stack/pico_socket_multicast.o \
           stack/pico_tree.o \
-          stack/pico_md5.o
+          stack/pico_md5.o \
+					stack/pico_bsd_sockets.o
 
 POSIX_OBJ+= modules/pico_dev_vde.o \
             modules/pico_dev_tun.o \
@@ -246,6 +247,10 @@ POSIX_OBJ+= modules/pico_dev_vde.o \
             modules/pico_dev_mock.o
 
 include rules/debug.mk
+
+ifeq ($(ARCH),chickadee)
+    CFLAGS+=-DCHICKADEE
+endif
 
 ifneq ($(ETH),0)
   include rules/eth.mk
@@ -350,6 +355,8 @@ core: $(CORE_OBJ)
 	@mv stack/*.o $(PREFIX)/lib
 
 mod: $(MOD_OBJ)
+	@$(CC) -c -o modules/pico_dev_e1000.o modules/pico_dev_e1000.c $(CFLAGS)
+	@$(CC) -c -o modules/tcpecho.o test/examples/tcpecho.c $(CFLAGS)
 	@mkdir -p $(PREFIX)/modules
 	@mv modules/*.o $(PREFIX)/modules || echo
 

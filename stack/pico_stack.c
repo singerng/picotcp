@@ -959,4 +959,3 @@ int MOCKABLE pico_stack_init(void)
     pico_stack_tick();
     return 0;
 }
-

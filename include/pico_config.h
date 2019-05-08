@@ -211,6 +211,8 @@ static inline uint64_t long_long_be(uint64_t le)
 # include "arch/pico_mbed.h"
 #elif defined AVR
 # include "arch/pico_avr.h"
+#elif defined CHICKADEE
+# include "arch/pico_chickadee.h"
 #elif defined ARM9
 # include "arch/pico_arm9.h"
 #elif defined ESP8266

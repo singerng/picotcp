@@ -308,7 +308,9 @@ static int32_t pico_ethsend_local(struct pico_frame *f, struct pico_eth_hdr *hdr
         dbg("sending out packet destined for our own mac\n");
         if (pico_ethernet_receive(clone) < 0) {
             dbg("pico_ethernet_receive() failed\n");
+            return 0;
         }
+        pico_frame_discard(f);
         return 1;
     }
 
@@ -443,5 +445,3 @@ int32_t MOCKABLE pico_ethernet_send(struct pico_frame *f)
 }
 
 #endif /* PICO_SUPPORT_ETH */
-
-
