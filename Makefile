@@ -94,6 +94,10 @@ CFLAGS=-I$(PREFIX)/include -Iinclude -Imodules  $(EXTRA_CFLAGS)
 # options for adding warnings
 CFLAGS+= -Wall -W -Wextra -Wshadow -Wcast-qual -Wwrite-strings -Wundef -Wdeclaration-after-statement
 CFLAGS+= -Wconversion -Wcast-align -Wmissing-prototypes
+CFLAGS+= -m64 -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 -mno-3dnow -ffreestanding
+CFLAGS+= -fno-omit-frame-pointer -fno-pic -Wall -W -Wshadow -Wno-format -Wno-unused-variable
+CFLAGS+= -Wno-unused-label -Wno-unused-parameter -Wstack-usage=1024 -fno-stack-protector
+CFLAGS+= -fno-exceptions -gdwarf -ffunction-sections -mcmodel=kernel
 # options for supressing warnings
 CFLAGS+= -Wno-missing-field-initializers
 
@@ -249,7 +253,7 @@ POSIX_OBJ+= modules/pico_dev_vde.o \
 include rules/debug.mk
 
 ifeq ($(ARCH),chickadee)
-    CFLAGS+=-DCHICKADEE
+    CFLAGS+=-DCHICKADEE -fno-stack-protector
 endif
 
 ifneq ($(ETH),0)

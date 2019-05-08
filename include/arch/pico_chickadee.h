@@ -2,9 +2,9 @@
 #define PICO_SUPPORT_CHICKADEE
 
 
-void* _kalloc(int sz);
-void _kfree(void *x);
-unsigned long long ticks;
+extern void* _kalloc(int sz);
+extern void _kfree(void *x);
+extern unsigned long get_ticks();
 
 #define pico_free(x) _kfree(x)
 
@@ -16,18 +16,19 @@ static inline void* pico_zalloc(int sz) {
 
 static inline unsigned long PICO_TIME()
 {
-    return (unsigned long) (ticks / 100);
+    return (unsigned long) (get_ticks() / 100);
 }
 
 static inline unsigned long PICO_TIME_MS()
 {
-    return (unsigned long) (ticks * 10);
+  // log_printf("called\n");
+    return (unsigned long) (get_ticks() * 10);
 }
 
 static inline void PICO_IDLE()
 {
-    unsigned long long now = ticks;
-    while(now == ticks);
+    unsigned long long now = get_ticks();
+    while(now == get_ticks());
 }
 
 #endif

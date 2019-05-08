@@ -21,7 +21,7 @@
 #include <sys/select.h>
 
 
-static __thread int in_the_stack = 0;
+static int in_the_stack = 0;
 static int initialized = 0;
 #define ptsock_dbg printf
 
@@ -150,8 +150,8 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
 
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 {
-    if(in_the_stack) { 
-        return host_accept(sockfd, addr, addrlen); 
+    if(in_the_stack) {
+        return host_accept(sockfd, addr, addrlen);
     } else {
         int posix_fd, new_sd, listen_sd = get_pico_fd(sockfd);
         if (listen_sd < 0) {
@@ -242,18 +242,18 @@ int getsockopt (int sockfd, int level, int optname, void *optval, socklen_t *opt
 
 int poll(struct pollfd *pfd, nfds_t npfd, int timeout)
 {
-   if(in_the_stack) { 
-    return host_poll(pfd, npfd, timeout); 
-   } else { 
+   if(in_the_stack) {
+    return host_poll(pfd, npfd, timeout);
+   } else {
        int i, j = 0;
        struct pollfd pico_pfd[npfd];
        for (i = 0; i < npfd; i++) {
-            pico_pfd[j].fd = get_pico_fd(pfd[i].fd); 
+            pico_pfd[j].fd = get_pico_fd(pfd[i].fd);
             if (pico_pfd[j].fd >= 0) {
                 j++;
                 pico_pfd[j].events = pfd[i].events;
             }
-       } 
+       }
        if (j > 0) {
             int pico_retval = pico_poll(pico_pfd, j, timeout);
             if (pico_retval < 0)
@@ -269,18 +269,18 @@ int poll(struct pollfd *pfd, nfds_t npfd, int timeout)
 
 int ppoll(struct pollfd *pfd, nfds_t npfd, const struct timespec *timeout_ts, const sigset_t *sigmask)
 {
-   if(in_the_stack) { 
-    return host_ppoll(pfd, npfd, timeout_ts, sigmask); 
-   } else { 
+   if(in_the_stack) {
+    return host_ppoll(pfd, npfd, timeout_ts, sigmask);
+   } else {
        int i, j = 0;
        struct pollfd pico_pfd[npfd];
        for (i = 0; i < npfd; i++) {
-            pico_pfd[j].fd = get_pico_fd(pfd[i].fd); 
+            pico_pfd[j].fd = get_pico_fd(pfd[i].fd);
             if (pico_pfd[j].fd >= 0) {
                 j++;
                 pico_pfd[j].events = pfd[i].events;
             }
-       } 
+       }
        if (j > 0) {
             int pico_retval = pico_ppoll(pico_pfd, j, timeout_ts, NULL);
             if (pico_retval < 0)
@@ -302,9 +302,9 @@ int pselect(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, cons
    PICO_FD_ZERO(&ws);
    PICO_FD_ZERO(&es);
 
-   if(in_the_stack) { 
-       return host_pselect(nfds, readfds, writefds, exceptfds, timeout, sigmask); 
-   } else { 
+   if(in_the_stack) {
+       return host_pselect(nfds, readfds, writefds, exceptfds, timeout, sigmask);
+   } else {
        int i, max = -1;
        for (i = 0; i < nfds; i++) {
             int picofd = get_pico_fd(i);
@@ -349,9 +349,9 @@ int pselect(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, cons
 
 int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
 {
-   if(in_the_stack) { 
-       return host_select(nfds, readfds, writefds, exceptfds, timeout); 
-   } else { 
+   if(in_the_stack) {
+       return host_select(nfds, readfds, writefds, exceptfds, timeout);
+   } else {
        if (timeout) {
            const struct timespec ts = {timeout->tv_sec, timeout->tv_usec * 1000};
            return pselect(nfds, readfds, writefds, exceptfds, &ts, NULL);
@@ -426,4 +426,3 @@ int __attribute__((constructor)) pico_wrapper_start(void)
     sleep(1);
     return 0;
 }
-

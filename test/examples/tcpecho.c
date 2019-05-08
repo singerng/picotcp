@@ -11,7 +11,7 @@ void app_tcpecho()
   struct sockaddr_in server = {0}, client={0};
   server.sin_family = AF_INET;
   server.sin_addr.s_addr = INADDR_ANY;
-  server.sin_port = 55;
+  server.sin_port = 6667;
 
   /* end of argument parsing */
   int s = pico_newsocket(AF_INET, SOCK_STREAM, PICO_PROTO_TCP);
@@ -21,12 +21,12 @@ void app_tcpecho()
   int ret = pico_bind(s, &server, sizeof(server));
 
   if (ret < 0) {
-    printf("%s: error binding socket to port %u: %d\n", __FUNCTION__, short_be(listen_port), pico_err);
+    printf("%s: error binding socket to port %u: %d\n", __FUNCTION__, short_be(55), pico_err);
     exit(1);
   }
 
   if (pico_listen(s, 128) != 0) {
-    printf("%s: error listening on port %u\n", __FUNCTION__, short_be(listen_port));
+    printf("%s: error listening on port %u\n", __FUNCTION__, short_be(55));
     exit(1);
   }
 
